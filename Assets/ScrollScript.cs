@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class ScrollScript : MonoBehaviour
 {
-    public float speed = 0;
+    public float speed = .1f;
 
     // Update is called once per frame
-    void Update()
-    {
-        GetComponent<Renderer>().material.mainTextureOffset = new Vector2(Time.time * speed, 0f);
+    void Update() {
+        Vector2 offset = new Vector2(Time.time * speed, 0);
+        GetComponent<Renderer>().material.mainTextureOffset = offset;
     }
+
 }
