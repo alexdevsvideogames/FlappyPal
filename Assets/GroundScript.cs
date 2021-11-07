@@ -17,8 +17,8 @@ public class GroundScript : MonoBehaviour
     {
         transform.Translate(Vector3.left * Time.deltaTime * speed);
 
-        if(transform.position[0] < -600) {
-            transform.position = new Vector3(transform.position[0]+819,transform.position[1],transform.position[2]);
+        if(transform.position[0] < -1300) {
+            transform.position = new Vector3(transform.position[0]+1638*2,transform.position[1],transform.position[2]);
         }
     }
 }
