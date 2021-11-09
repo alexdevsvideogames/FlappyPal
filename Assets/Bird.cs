@@ -12,6 +12,7 @@ public class Bird : MonoBehaviour
     public Text ScoreText;
     public int score;
     private float RotationSpeed = 200.0f;
+    public float FlapDuration = 0.01f;
 
     public GameObject obstacle1;
     public GameObject obstacle2;
@@ -24,6 +25,11 @@ public class Bird : MonoBehaviour
     public GameObject obstacle32;
 
     public AudioSource punchSFX;
+    public AudioSource flapSFX;
+
+    public SpriteRenderer spriteRenderer;
+    public Sprite birdSprite;
+    public Sprite birdFlapSprite;
 
     // Start is called before the first frame update
     void Start()
@@ -33,14 +39,14 @@ public class Bird : MonoBehaviour
         DeathRotate = false;
         score = 0;
         transform.rotation = Quaternion.Euler(0, 0, 0);
+        spriteRenderer.sprite = birdSprite; 
     }
 
     // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown("space") & (GameOver==false)) {
-            // the cube is going to move upwards in 10 units per second
-            rb2D.velocity = new Vector3(0, 100, 0);
+            BirdFlap();
         }
 
         updateText();
@@ -75,8 +81,16 @@ public class Bird : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter2D(Collider2D col)
-    {
+    void BirdFlap() {
+        spriteRenderer.sprite = birdSprite;  
+        // the cube is going to move upwards in 10 units per second
+        rb2D.velocity = new Vector3(0, 100, 0);
+        flapSFX.Play();
+        spriteRenderer.sprite = birdFlapSprite;  
+        StartCoroutine(FlapCoroutine());
+    }
+
+    void OnTriggerEnter2D(Collider2D col) {
         if (GameOver==false) {
             GameOver = true;
             rb2D.velocity = new Vector3(0, 200, 0);
@@ -124,4 +138,10 @@ public class Bird : MonoBehaviour
         obstacle3.transform.position = new Vector3(950.0f,obstacle3.transform.position[1],obstacle3.transform.position[2]);
         obstacle32.transform.position = new Vector3(950.0f,obstacle32.transform.position[1],obstacle32.transform.position[2]);
     }
+
+    IEnumerator FlapCoroutine() {
+        yield return new WaitForSeconds(0.1f);
+        spriteRenderer.sprite = birdSprite; 
+    }
+
 }
