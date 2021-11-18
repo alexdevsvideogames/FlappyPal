@@ -6,13 +6,17 @@ using UnityEngine.UI;
 public class Bird : MonoBehaviour
 {
     private Rigidbody2D rb2D;
-    private bool GameOver; 
+    public bool GameOver; 
     private bool DeathRotate;
     public Text GameOverText;
     public Text ScoreText;
     public int score;
     private float RotationSpeed = 200.0f;
     public float FlapDuration = 0.01f;
+    private float GrowDuration = 5f;
+    private bool growBird = false;
+    private bool shrinkBird = false;
+    private bool addBonus = false;
 
     public GameObject obstacle1;
     public GameObject obstacle2;
@@ -23,13 +27,18 @@ public class Bird : MonoBehaviour
     public GameObject obstacle12;
     public GameObject obstacle22;
     public GameObject obstacle32;
+    public GameObject food;
 
     public AudioSource punchSFX;
     public AudioSource flapSFX;
+    public AudioSource munchSFX;
+    public AudioSource growSFX;
+    public AudioSource shrinkSFX;
 
     public SpriteRenderer spriteRenderer;
     public Sprite birdSprite;
     public Sprite birdFlapSprite;
+
 
     // Start is called before the first frame update
     void Start()
@@ -51,8 +60,12 @@ public class Bird : MonoBehaviour
 
         updateText();
 
-        if (GameOver & (Input.GetKeyDown("escape"))) {
+        if (GameOver & (Input.GetKeyDown("space"))) {
             resetGame();
+        }
+
+        if (Input.GetKey("escape")) {
+            Application.Quit();
         }
 
         if (DeathRotate) {
@@ -79,6 +92,21 @@ public class Bird : MonoBehaviour
         } else if (obstacle3.transform.position[0] > 500) {
             ob3Reset = true;
         }
+
+        if (growBird) {
+            transform.localScale += new Vector3(0.02f, 0.02f, 0f);
+            rb2D.mass += 20f;
+        }
+
+        if (shrinkBird) {
+            transform.localScale -= new Vector3(0.02f, 0.02f, 0f);
+            rb2D.mass -= 20f;
+        }
+
+        if (addBonus) {
+            score = bonusScore(score);
+            addBonus = false;
+        }
     }
 
     void BirdFlap() {
@@ -91,11 +119,21 @@ public class Bird : MonoBehaviour
     }
 
     void OnTriggerEnter2D(Collider2D col) {
-        if (GameOver==false) {
-            GameOver = true;
-            rb2D.velocity = new Vector3(0, 200, 0);
-            DeathRotate = true;
-            punchSFX.Play();
+        Debug.Log(col.tag);
+        if (col.tag == "pipe") {
+            if (GameOver==false) {
+                GameOver = true;
+                rb2D.velocity = new Vector3(0, 200, 0);
+                DeathRotate = true;
+                punchSFX.Play();
+            }
+        }
+        if (col.tag == "food") {
+            munchSFX.Play();
+            addBonus = true;
+            food.transform.position = new Vector3(food.transform.position[0], 300, food.transform.position[2]);
+            growBird = true;
+            StartCoroutine(GrowBirdCoroutine(GrowDuration));
         }
     }
 
@@ -107,7 +145,11 @@ public class Bird : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, 0, 0);
         rb2D.velocity = new Vector3(0, 0, 0);
         DeathRotate = false;
+        rb2D.mass = 1;
+        transform.localScale = new Vector3(27.0f,30.0f,1.0f);
         resetPipes();
+        StopCoroutine(GrowBirdCoroutine(GrowDuration));
+        food.transform.position = new Vector3(food.transform.position[0], 300, food.transform.position[2]);
     }
 
     void DeathRotation() {
@@ -128,6 +170,12 @@ public class Bird : MonoBehaviour
         return score;
     }
 
+    int bonusScore(int score) {
+        score += 3;
+        ScoreText.text = score.ToString();
+        return score;
+    }
+
     public void resetPipes(){
         obstacle1.transform.position = new Vector3(250.0f,obstacle1.transform.position[1],obstacle1.transform.position[2]);
         obstacle12.transform.position = new Vector3(250.0f,obstacle12.transform.position[1],obstacle12.transform.position[2]);
@@ -142,6 +190,21 @@ public class Bird : MonoBehaviour
     IEnumerator FlapCoroutine() {
         yield return new WaitForSeconds(0.1f);
         spriteRenderer.sprite = birdSprite; 
+    }
+
+    IEnumerator GrowBirdCoroutine(float GrowDuration) {
+        yield return new WaitForSeconds(0.2f);
+        Debug.Log("growing...");
+        growSFX.Play();
+        yield return new WaitForSeconds(GrowDuration/4);
+        growBird = false;
+        Debug.Log("steady...");
+        yield return new WaitForSeconds(GrowDuration/2);
+        shrinkBird = true;
+        Debug.Log("shrinking...");
+        shrinkSFX.Play();
+        yield return new WaitForSeconds(GrowDuration/4);
+        shrinkBird = false;
     }
 
 }

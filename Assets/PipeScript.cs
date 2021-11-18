@@ -6,6 +6,7 @@ public class PipeScript : MonoBehaviour
 {
     public GameObject pipe1;
     public GameObject pipe2;
+    public Bird bird = new Bird();
 
     public float speed = 100f;
     private float obstacleDist = 400f;
@@ -25,8 +26,10 @@ public class PipeScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        pipe1.transform.Translate(Vector3.left * Time.deltaTime * speed);
-        pipe2.transform.Translate(Vector3.right * Time.deltaTime * speed);
+        if (bird.GameOver == false) {
+            pipe1.transform.Translate(Vector3.left * Time.deltaTime * speed);
+            pipe2.transform.Translate(Vector3.right * Time.deltaTime * speed);
+        }
 
         //todo respawn when too far left
         if(pipe1.transform.position[0] < -500) {

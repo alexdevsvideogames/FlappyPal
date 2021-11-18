@@ -5,6 +5,7 @@ using UnityEngine;
 public class GroundScript : MonoBehaviour
 {
     public float speed = 1f;
+    public Bird bird = new Bird();
 
     // Start is called before the first frame update
     void Start()
@@ -15,7 +16,10 @@ public class GroundScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector3.left * Time.deltaTime * speed);
+        if (bird.GameOver == false) {
+            transform.Translate(Vector3.left * Time.deltaTime * speed);
+        }
+        //Debug.Log(bird.GameOver);
 
         if(transform.position[0] < -1300) {
             transform.position = new Vector3(transform.position[0]+1638*2,transform.position[1],transform.position[2]);

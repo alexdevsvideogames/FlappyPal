@@ -5,11 +5,14 @@ using UnityEngine;
 public class ScrollScript : MonoBehaviour
 {
     public float speed = .1f;
+    public Bird bird = new Bird();
 
     // Update is called once per frame
     void Update() {
-        Vector2 offset = new Vector2(Time.time * speed, 0);
-        GetComponent<Renderer>().material.mainTextureOffset = offset;
+        if (bird.GameOver == false) {
+            Vector2 offset = new Vector2(Time.time * speed, 0);
+            GetComponent<Renderer>().material.mainTextureOffset = offset;
+        }
     }
 
 }
