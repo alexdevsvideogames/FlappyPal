@@ -12,7 +12,7 @@ public class PipeScript : MonoBehaviour
     private float obstacleDist = 400f;
 
     float pipe1Y = -220;
-    float pipe2Y = 170;
+    float pipe2Y = 200;
     float shiftamount = 1050f;
     float RandStrength = 70.0f;
     public float resetX;

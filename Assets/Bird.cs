@@ -47,8 +47,25 @@ public class Bird : MonoBehaviour
         GameOver = false;
         DeathRotate = false;
         score = 0;
+        ScoreText.text = score.ToString();
+        
         transform.rotation = Quaternion.Euler(0, 0, 0);
         spriteRenderer.sprite = birdSprite; 
+        transform.position = new Vector3(0f,0f,-1.1f);
+        rb2D.velocity = new Vector3(0, 0, 0);
+        rb2D.mass = 1;
+        transform.localScale = new Vector3(27.0f,30.0f,1.0f);
+
+        resetPipes();
+        StopCoroutine(GrowBirdCoroutine(GrowDuration));
+        food.transform.position = new Vector3(food.transform.position[0], 300, food.transform.position[2]);
+
+        ob1Reset = true;
+        ob2Reset = true;
+        ob3Reset = true;
+        growBird = false;
+        shrinkBird = false;
+        addBonus = false;
     }
 
     // Update is called once per frame
@@ -62,10 +79,6 @@ public class Bird : MonoBehaviour
 
         if (GameOver & (Input.GetKeyDown("space"))) {
             resetGame();
-        }
-
-        if (Input.GetKey("escape")) {
-            Application.Quit();
         }
 
         if (DeathRotate) {
@@ -94,12 +107,12 @@ public class Bird : MonoBehaviour
         }
 
         if (growBird) {
-            transform.localScale += new Vector3(0.02f, 0.02f, 0f);
+            transform.localScale += new Vector3(0.1f, 0.1f, 0f);
             rb2D.mass += 20f;
         }
 
         if (shrinkBird) {
-            transform.localScale -= new Vector3(0.02f, 0.02f, 0f);
+            transform.localScale -= new Vector3(0.1f, 0.1f, 0f);
             rb2D.mass -= 20f;
         }
 
@@ -177,14 +190,18 @@ public class Bird : MonoBehaviour
     }
 
     public void resetPipes(){
-        obstacle1.transform.position = new Vector3(250.0f,obstacle1.transform.position[1],obstacle1.transform.position[2]);
-        obstacle12.transform.position = new Vector3(250.0f,obstacle12.transform.position[1],obstacle12.transform.position[2]);
+        float RandStrength = 70.0f;
+        float gap = Random.Range(-RandStrength, RandStrength);
+        float shift = Random.Range(-RandStrength, RandStrength);
 
-        obstacle2.transform.position = new Vector3(600.0f,obstacle2.transform.position[1],obstacle2.transform.position[2]);
-        obstacle22.transform.position = new Vector3(600.0f,obstacle22.transform.position[1],obstacle22.transform.position[2]);
+        obstacle1.transform.position = new Vector3(250.0f,-220.0f+shift+gap/2,obstacle1.transform.position[2]);
+        obstacle12.transform.position = new Vector3(250.0f,200.0f+shift+gap/2,obstacle12.transform.position[2]);
 
-        obstacle3.transform.position = new Vector3(950.0f,obstacle3.transform.position[1],obstacle3.transform.position[2]);
-        obstacle32.transform.position = new Vector3(950.0f,obstacle32.transform.position[1],obstacle32.transform.position[2]);
+        obstacle2.transform.position = new Vector3(600.0f,-220.0f+shift+gap/2,obstacle2.transform.position[2]);
+        obstacle22.transform.position = new Vector3(600.0f,200.0f+shift+gap/2,obstacle22.transform.position[2]);
+
+        obstacle3.transform.position = new Vector3(950.0f,-220.0f+shift+gap/2,obstacle3.transform.position[2]);
+        obstacle32.transform.position = new Vector3(950.0f,200.0f+shift+gap/2,obstacle32.transform.position[2]);
     }
 
     IEnumerator FlapCoroutine() {
