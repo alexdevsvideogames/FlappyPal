@@ -71,13 +71,17 @@ public class Bird : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("space") & (GameOver==false)) {
+        if (Input.GetMouseButtonDown((0)) & (GameOver==false)) {
             BirdFlap();
         }
 
         updateText();
 
+<<<<<<< Updated upstream
         if (GameOver & (Input.GetKeyDown("space"))) {
+=======
+        if (GameOver & Input.GetMouseButtonDown((0))) {
+>>>>>>> Stashed changes
             resetGame();
         }
 
