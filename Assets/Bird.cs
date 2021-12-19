@@ -77,11 +77,7 @@ public class Bird : MonoBehaviour
 
         updateText();
 
-<<<<<<< Updated upstream
-        if (GameOver & (Input.GetKeyDown("space"))) {
-=======
         if (GameOver & Input.GetMouseButtonDown((0))) {
->>>>>>> Stashed changes
             resetGame();
         }
 
