@@ -8,11 +8,10 @@ public class PipeScript : MonoBehaviour
     public GameObject pipe2;
     public Bird bird = new Bird();
 
-    public float speed = 100f;
-    private float obstacleDist = 400f;
-
-    float pipe1Y = -220;
-    float pipe2Y = 200;
+    float speed;
+    //private float obstacleDist = 400f;
+    float pipe1Y = -200; //220
+    float pipe2Y = 190; //200
     float shiftamount = 1050f;
     float RandStrength = 70.0f;
     public float resetX;
@@ -31,8 +30,14 @@ public class PipeScript : MonoBehaviour
             pipe2.transform.Translate(Vector3.right * Time.deltaTime * speed);
         }
 
+        if (bird.GetReady == true) {
+            speed = 0;
+        } else {
+            speed = 100f;
+        }
+
         //todo respawn when too far left
-        if(pipe1.transform.position[0] < -500) {
+        if(pipe1.transform.position[0] < -520) {
             randomisePipes(shiftamount);
         }
 

@@ -8,15 +8,25 @@ public class Bird : MonoBehaviour
     private Rigidbody2D rb2D;
     public bool GameOver; 
     private bool DeathRotate;
+    public bool GetReady;
     public Text GameOverText;
     public Text ScoreText;
+    public Text HiScoreText;
+    public Text GetReadyText;
+    public Text CreditsText;
     public int score;
     private float RotationSpeed = 200.0f;
+    private float fallSpeed = 140.0f;
     public float FlapDuration = 0.01f;
     private float GrowDuration = 5f;
     private bool growBird = false;
     private bool shrinkBird = false;
     private bool addBonus = false;
+    float pipe1Y = -200; //220
+    float pipe2Y = 190; //200
+    IEnumerator birdGrow;
+    //IEnumerator growBird;
+    //IEnumerator shrinkBird;
 
     public GameObject obstacle1;
     public GameObject obstacle2;
@@ -39,6 +49,11 @@ public class Bird : MonoBehaviour
     public Sprite birdSprite;
     public Sprite birdFlapSprite;
 
+    void Awake ()
+    {
+        HiScoreText.text = PlayerPrefs.GetInt("HiScore", 0).ToString();
+    }
+
 
     // Start is called before the first frame update
     void Start()
@@ -46,19 +61,17 @@ public class Bird : MonoBehaviour
         rb2D = GetComponent<Rigidbody2D>();
         GameOver = false;
         DeathRotate = false;
+        GetReady = true;
         score = 0;
         ScoreText.text = score.ToString();
+        HiScoreText.enabled = false;
         
         transform.rotation = Quaternion.Euler(0, 0, 0);
         spriteRenderer.sprite = birdSprite; 
         transform.position = new Vector3(0f,0f,-1.1f);
         rb2D.velocity = new Vector3(0, 0, 0);
-        rb2D.mass = 1;
-        transform.localScale = new Vector3(27.0f,30.0f,1.0f);
-
-        resetPipes();
-        StopCoroutine(GrowBirdCoroutine(GrowDuration));
-        food.transform.position = new Vector3(food.transform.position[0], 300, food.transform.position[2]);
+        rb2D.mass = 100;
+        transform.localScale = new Vector3(17.0f,20.0f,1.0f);
 
         ob1Reset = true;
         ob2Reset = true;
@@ -66,11 +79,19 @@ public class Bird : MonoBehaviour
         growBird = false;
         shrinkBird = false;
         addBonus = false;
+
+        resetPipes();
+        birdGrow = GrowBirdCoroutine(GrowDuration);
+        food.transform.position = new Vector3(food.transform.position[0], 300, food.transform.position[2]);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (GetReady & Input.GetMouseButtonDown((0))) {
+            StartGame();
+        }
+
         if (Input.GetMouseButtonDown((0)) & (GameOver==false)) {
             BirdFlap();
         }
@@ -81,8 +102,16 @@ public class Bird : MonoBehaviour
             resetGame();
         }
 
+        if (GetReady) {
+            transform.position = new Vector3(0f,0f,-1.1f);
+        }
+
         if (DeathRotate) {
             DeathRotation();
+        }
+
+        if ((GameOver == false) & (GetReady == false)) {
+            transform.Rotate( new Vector3(0,0,1) * ( -fallSpeed * Time.deltaTime ));
         }
 
         if ((obstacle1.transform.position[0] < 0) & (ob1Reset) & (DeathRotate==false)) {
@@ -107,25 +136,38 @@ public class Bird : MonoBehaviour
         }
 
         if (growBird) {
-            transform.localScale += new Vector3(0.1f, 0.1f, 0f);
-            rb2D.mass += 20f;
+            transform.localScale += new Vector3(0.25f, 0.25f, 0f);
+            rb2D.mass += 50.0f;
         }
 
         if (shrinkBird) {
-            transform.localScale -= new Vector3(0.1f, 0.1f, 0f);
-            rb2D.mass -= 20f;
+            transform.localScale -= new Vector3(0.25f, 0.25f, 0f);
+            rb2D.mass -= 50.0f;
         }
 
         if (addBonus) {
             score = bonusScore(score);
             addBonus = false;
         }
+
+        if(score>PlayerPrefs.GetInt("HiScore", 0))
+        {
+            PlayerPrefs.SetInt("HiScore", score);
+            HiScoreText.text = score.ToString();
+        }
+    }
+
+    void StartGame() {
+        Debug.Log("START");
+        GetReady = false;
+        GetReadyText.enabled = false;
     }
 
     void BirdFlap() {
         spriteRenderer.sprite = birdSprite;  
         // the cube is going to move upwards in 10 units per second
-        rb2D.velocity = new Vector3(0, 100, 0);
+        rb2D.velocity = new Vector3(0, 350, 0);
+        transform.rotation = Quaternion.Euler(0,0,60);
         flapSFX.Play();
         spriteRenderer.sprite = birdFlapSprite;  
         StartCoroutine(FlapCoroutine());
@@ -145,23 +187,38 @@ public class Bird : MonoBehaviour
             munchSFX.Play();
             addBonus = true;
             food.transform.position = new Vector3(food.transform.position[0], 300, food.transform.position[2]);
-            growBird = true;
-            StartCoroutine(GrowBirdCoroutine(GrowDuration));
+            //growBird = true;
+            StartCoroutine(birdGrow);
         }
     }
 
+    // reset game same as start()
     void resetGame() {
+        Debug.Log("RESET");
         GameOver = false;
+        DeathRotate = false;
+        GetReady = true;
+        GetReadyText.enabled = true;
         score = 0;
         ScoreText.text = score.ToString();
-        transform.position = new Vector3(0f,0f,-1.1f);
+        HiScoreText.enabled = false;
+        
         transform.rotation = Quaternion.Euler(0, 0, 0);
+        spriteRenderer.sprite = birdSprite; 
+        transform.position = new Vector3(0f,0f,-1.1f);
         rb2D.velocity = new Vector3(0, 0, 0);
-        DeathRotate = false;
-        rb2D.mass = 1;
-        transform.localScale = new Vector3(27.0f,30.0f,1.0f);
+        rb2D.mass = 100;
+        transform.localScale = new Vector3(17.0f,20.0f,1.0f);
+
+        ob1Reset = true;
+        ob2Reset = true;
+        ob3Reset = true;
+        //growBird = false;
+        //shrinkBird = false;
+        addBonus = false;
+
         resetPipes();
-        StopCoroutine(GrowBirdCoroutine(GrowDuration));
+        StopCoroutine(birdGrow);
         food.transform.position = new Vector3(food.transform.position[0], 300, food.transform.position[2]);
     }
 
@@ -172,8 +229,18 @@ public class Bird : MonoBehaviour
     void updateText() {
         if (GameOver) {
             GameOverText.enabled = true;
+            CreditsText.enabled = true;
+            int HiScore = PlayerPrefs.GetInt("HiScore", 0);
+            if (HiScore == score) {
+                HiScoreText.text = "NEW HIGH SCORE!!";
+            } else {
+                HiScoreText.text = "High Score: " + PlayerPrefs.GetInt("HiScore", 0).ToString();
+            }
+            HiScoreText.enabled = true;
         } else {
             GameOverText.enabled = false;
+            CreditsText.enabled = false;
+            HiScoreText.enabled = false;
         }
     }
 
@@ -194,14 +261,14 @@ public class Bird : MonoBehaviour
         float gap = Random.Range(-RandStrength, RandStrength);
         float shift = Random.Range(-RandStrength, RandStrength);
 
-        obstacle1.transform.position = new Vector3(250.0f,-220.0f+shift+gap/2,obstacle1.transform.position[2]);
-        obstacle12.transform.position = new Vector3(250.0f,200.0f+shift+gap/2,obstacle12.transform.position[2]);
+        obstacle1.transform.position = new Vector3(550.0f,pipe1Y+shift+gap/2,obstacle1.transform.position[2]);
+        obstacle12.transform.position = new Vector3(550.0f,pipe2Y+shift+gap/2,obstacle12.transform.position[2]);
 
-        obstacle2.transform.position = new Vector3(600.0f,-220.0f+shift+gap/2,obstacle2.transform.position[2]);
-        obstacle22.transform.position = new Vector3(600.0f,200.0f+shift+gap/2,obstacle22.transform.position[2]);
+        obstacle2.transform.position = new Vector3(900.0f,pipe1Y+shift+gap/2,obstacle2.transform.position[2]);
+        obstacle22.transform.position = new Vector3(900.0f,pipe2Y+shift+gap/2,obstacle22.transform.position[2]);
 
-        obstacle3.transform.position = new Vector3(950.0f,-220.0f+shift+gap/2,obstacle3.transform.position[2]);
-        obstacle32.transform.position = new Vector3(950.0f,200.0f+shift+gap/2,obstacle32.transform.position[2]);
+        obstacle3.transform.position = new Vector3(1250.0f,pipe1Y+shift+gap/2,obstacle3.transform.position[2]);
+        obstacle32.transform.position = new Vector3(1250.0f,pipe2Y+shift+gap/2,obstacle32.transform.position[2]);
     }
 
     IEnumerator FlapCoroutine() {
@@ -210,18 +277,37 @@ public class Bird : MonoBehaviour
     }
 
     IEnumerator GrowBirdCoroutine(float GrowDuration) {
-        yield return new WaitForSeconds(0.2f);
+        //growBird = growBirdCoRoutine(GrowDuration/8);
+        //shrinkBird = shrinkBirdCoRoutine(GrowDuration/8);
+        //yield return new WaitForSeconds(0.2f);
         Debug.Log("growing...");
+        growBird = true;
         growSFX.Play();
-        yield return new WaitForSeconds(GrowDuration/4);
+        //StartCoroutine(growBird);
+        yield return new WaitForSeconds(GrowDuration/8);
+        //StopCoroutine(growBird);
         growBird = false;
         Debug.Log("steady...");
-        yield return new WaitForSeconds(GrowDuration/2);
+        yield return new WaitForSeconds(GrowDuration/4*3);
         shrinkBird = true;
         Debug.Log("shrinking...");
         shrinkSFX.Play();
-        yield return new WaitForSeconds(GrowDuration/4);
+        //StartCoroutine(shrinkBird);
+        yield return new WaitForSeconds(GrowDuration/8);
+        //StopCoroutine(shrinkBird);
         shrinkBird = false;
     }
+
+    /*IEnumerator growBirdCoRoutine(float Duration) {
+        transform.localScale += new Vector3(0.02f, 0.02f, 0f);
+        rb2D.mass += 4.0f;
+        yield return new WaitForSeconds(Duration);
+    }
+
+    IEnumerator shrinkBirdCoRoutine(float Duration) {
+        transform.localScale -= new Vector3(0.02f, 0.02f, 0f);
+        rb2D.mass -= 4.0f;
+        yield return new WaitForSeconds(Duration);
+    }*/
 
 }

@@ -8,7 +8,7 @@ public class FoodScript : MonoBehaviour
     float shiftamount = 1050f;
     public Bird bird = new Bird();
     float randomY = 300.0f;
-    float randomX = 0.0f;
+    //float randomX = 0.0f;
 
     public GameObject pipe1;
     public GameObject pipe3;
@@ -17,13 +17,13 @@ public class FoodScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //transform.position = new Vector3(350,300,0);
+        transform.position = new Vector3(350,300,0);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (bird.GameOver == false) {
+        if ((bird.GameOver == false) & (bird.GetReady == false)) {
             transform.Translate(Vector3.left * Time.deltaTime * speed);
         }
 
@@ -33,7 +33,7 @@ public class FoodScript : MonoBehaviour
             float spawnChance = Random.Range(0.0f,100.0f);
 
             if (spawnChance > 33.0f) {
-                randomY = Random.Range(-180.0f,180.0f);
+                randomY = Random.Range(-140.0f,140.0f);
             } else {
                 randomY = 300.0f;
             }
