@@ -5,29 +5,29 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638057323814910059
-    m_Hash: 382443574
+      ticks: 638058878453548217
+    m_Hash: 3978646296
   m_LockFileStatus:
     m_FilePath: D:/Dev/Unity/FlappyPal/Packages/packages-lock.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638057324043892672
-    m_Hash: 3159666627
+      ticks: 638058878690655246
+    m_Hash: 2206791868
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
 m_LocalPackages:
   m_LocalFileStatus: []
 m_ProjectPath: D:/Dev/Unity/FlappyPal/Packages
-m_EditorVersion: 2021.3.14f1 (eee1884e7226)
+m_EditorVersion: 2021.3.15f1 (e8e88683f834)
 m_ResolvedPackages:
-- packageId: com.unity.collab-proxy@1.17.6
+- packageId: com.unity.collab-proxy@1.17.7
   testable: 0
   isDirectDependency: 1
-  version: 1.17.6
+  version: 1.17.7
   source: 1
-  resolvedPath: D:\Dev\Unity\FlappyPal\Library\PackageCache\com.unity.collab-proxy@1.17.6
+  resolvedPath: D:\Dev\Unity\FlappyPal\Library\PackageCache\com.unity.collab-proxy@1.17.7
   assetPath: Packages/com.unity.collab-proxy
   name: com.unity.collab-proxy
   displayName: Version Control
@@ -108,7 +108,6 @@ m_ResolvedPackages:
     - 2.1.0-preview.5
     - 2.1.0-preview.6
     compatible:
-    - 1.17.6
     - 1.17.7
     - 2.0.0-preview.6
     - 2.0.0-preview.8
@@ -157,16 +156,16 @@ m_ResolvedPackages:
     configSource: 0
   hideInEditor: 0
   isAssetStorePackage: 0
-  datePublishedTicks: 638009928240000000
+  datePublishedTicks: 638036787040000000
   documentationUrl: 
   hasRepository: 1
   repository:
     type: git
     url: https://github.cds.internal.unity3d.com/unity/com.unity.cloud.collaborate.git
-    revision: 3744f24b80468ef1336fbc234c93625c4a6287b0
+    revision: 1641a631fd39029595decb52bdfb641b32ed194c
     path: 
   unityLifecycle:
-    version: 1.17.6
+    version: 1.17.7
     nextVersion: 
 - packageId: com.unity.ide.rider@3.0.16
   testable: 0
@@ -222,9 +221,11 @@ m_ResolvedPackages:
     - 3.0.14
     - 3.0.15
     - 3.0.16
+    - 3.0.17
     compatible:
     - 3.0.16
-    verified: 3.0.16
+    - 3.0.17
+    verified: 3.0.17
   dependencies:
   - name: com.unity.ext.nunit
     version: 1.0.6

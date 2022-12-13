@@ -7,7 +7,7 @@ public class Bird : MonoBehaviour
 {
     private Rigidbody2D rb2D;
     public bool GameOver; 
-    private bool DeathRotate;
+    public bool DeathRotate;
     public bool GetReady;
     public Text GameOverText;
     public Text ScoreText;
@@ -82,6 +82,7 @@ public class Bird : MonoBehaviour
 
         resetPipes();
         birdGrow = GrowBirdCoroutine(GrowDuration);
+        StopCoroutine(birdGrow);
         food.transform.position = new Vector3(food.transform.position[0], 300, food.transform.position[2]);
     }
 
@@ -219,6 +220,7 @@ public class Bird : MonoBehaviour
 
         resetPipes();
         StopCoroutine(birdGrow);
+        birdGrow = GrowBirdCoroutine(GrowDuration);
         food.transform.position = new Vector3(food.transform.position[0], 300, food.transform.position[2]);
     }
 
@@ -279,7 +281,7 @@ public class Bird : MonoBehaviour
     IEnumerator GrowBirdCoroutine(float GrowDuration) {
         //growBird = growBirdCoRoutine(GrowDuration/8);
         //shrinkBird = shrinkBirdCoRoutine(GrowDuration/8);
-        //yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.2f);
         Debug.Log("growing...");
         growBird = true;
         growSFX.Play();

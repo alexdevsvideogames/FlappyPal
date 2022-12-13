@@ -23,7 +23,7 @@ public class FoodScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if ((bird.GameOver == false) & (bird.GetReady == false)) {
+        if ((bird.GameOver == false) & (bird.GetReady == false) & (bird.DeathRotate == false)) {
             transform.Translate(Vector3.left * Time.deltaTime * speed);
         }
 

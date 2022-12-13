@@ -14,6 +14,8 @@ public class PipeScript : MonoBehaviour
     float pipe2Y = 190; //200
     float shiftamount = 1050f;
     float RandStrength = 70.0f;
+    float sineStrength = 0.15f;
+    float angle = 0.0f;
     public float resetX;
 
     // Start is called before the first frame update
@@ -26,9 +28,16 @@ public class PipeScript : MonoBehaviour
     void Update()
     {
         if (bird.GameOver == false) {
-            pipe1.transform.Translate(Vector3.left * Time.deltaTime * speed);
-            pipe2.transform.Translate(Vector3.right * Time.deltaTime * speed);
+            if (bird.score >= 10) {
+                pipe1.transform.Translate((Vector3.left + new Vector3 (0,sineStrength*Mathf.Sin(angle),0)) * Time.deltaTime * speed);
+                pipe2.transform.Translate((Vector3.right + new Vector3 (0,-sineStrength*Mathf.Sin(angle),0)) * Time.deltaTime * speed);
+            } else {
+                pipe1.transform.Translate(Vector3.left * Time.deltaTime * speed);
+                pipe2.transform.Translate(Vector3.right * Time.deltaTime * speed);
+            }
         }
+
+        angle += 0.02f;
 
         if (bird.GetReady == true) {
             speed = 0;
